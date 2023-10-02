@@ -186,11 +186,11 @@ def find_client(conn, name=None, lastname=None, email=None, phone=None):
 
 with psycopg2.connect(database="Clients", user="postgres", password="4815162342.cth84.te") as conn:
 
-    with conn.cursor() as cur:
-        cur.execute("""
-        DROP TABLE phone_numbers;
-        DROP TABLE clients;
-        """)
+    # with conn.cursor() as cur:
+    #     cur.execute("""
+    #     DROP TABLE phone_numbers;
+    #     DROP TABLE clients;
+    #     """)
 
     create_db(conn)
     add_client(conn, 'alex', 'ford', '1@1.ru', 1111)
