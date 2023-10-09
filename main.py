@@ -161,88 +161,88 @@ def find_client(conn, name=None, lastname=None, email=None, phone=None):
             print(cur.fetchone())
 
 
-with psycopg2.connect(database="Clients", user="postgres", password="4815162342.cth84.te") as conn:
+if __name__ == '__main__':
+    with psycopg2.connect(database="Clients", user="postgres", password="4815162342.cth84.te") as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+            DROP TABLE phone_numbers;
+            DROP TABLE clients;
+            """)
 
-    # with conn.cursor() as cur:
-    #     cur.execute("""
-    #     DROP TABLE phone_numbers;
-    #     DROP TABLE clients;
-    #     """)
+        create_db(conn)
+        add_client(conn, 'alex', 'ford', '1@1.ru', 1111)
+        add_client(conn, 'john', 'gold', '2@1.ru', 2222)
+        add_client(conn, 'sam', 'parks', '3@1.ru')
 
-    create_db(conn)
-    add_client(conn, 'alex', 'ford', '1@1.ru', 1111)
-    add_client(conn, 'john', 'gold', '2@1.ru', 2222)
-    add_client(conn, 'sam', 'parks', '3@1.ru')
+        print('Созданые и заполненые таблицы:')
+        with conn.cursor() as cur:
+            cur.execute("""
+            SELECT * FROM clients
+            """)
 
-    print('Созданые и заполненые таблицы:')
-    with conn.cursor() as cur:
-        cur.execute("""
-        SELECT * FROM clients
-        """)
+            print(cur.fetchall())
+        with conn.cursor() as cur:
+            cur.execute("""
+            SELECT * FROM phone_numbers
+            """)
 
-        print(cur.fetchall())
-    with conn.cursor() as cur:
-        cur.execute("""
-        SELECT * FROM phone_numbers
-        """)
+            print(cur.fetchall())
 
-        print(cur.fetchall())
+        add_number(conn, 3, 3333)
 
-    add_number(conn, 3, 3333)
+        print()
+        print('Добавление телефона:')
+        with conn.cursor() as cur:
+            cur.execute("""
+            SELECT * FROM phone_numbers
+            """)
 
-    print()
-    print('Добавление телефона:')
-    with conn.cursor() as cur:
-        cur.execute("""
-        SELECT * FROM phone_numbers
-        """)
+            print(cur.fetchall())
 
-        print(cur.fetchall())
+        change_client(conn,3, phones=[5555])
+        change_client(conn, 3, lastname='reed')
 
-    change_client(conn,3, phones=[5555])
-    change_client(conn, 3, lastname='reed')
+        print()
+        print('Изменение данных о клиенте:')
+        with conn.cursor() as cur:
+            cur.execute("""
+            SELECT * FROM phone_numbers
+            """)
 
-    print()
-    print('Изменение данных о клиенте:')
-    with conn.cursor() as cur:
-        cur.execute("""
-        SELECT * FROM phone_numbers
-        """)
+            print(cur.fetchall())
 
-        print(cur.fetchall())
+        delete_phone(conn, 3, 5555)
 
-    delete_phone(conn, 3, 5555)
+        print()
+        print('Удаление телефона:')
+        with conn.cursor() as cur:
+            cur.execute("""
+            SELECT * FROM phone_numbers
+            """)
 
-    print()
-    print('Удаление телефона:')
-    with conn.cursor() as cur:
-        cur.execute("""
-        SELECT * FROM phone_numbers
-        """)
+            print(cur.fetchall())
 
-        print(cur.fetchall())
+        delete_client(conn, 3)
 
-    delete_client(conn, 3)
+        print()
+        print('Удаление клиента из базы:')
+        with conn.cursor() as cur:
+            cur.execute("""
+            SELECT * FROM phone_numbers
+            """)
 
-    print()
-    print('Удаление клиента из базы:')
-    with conn.cursor() as cur:
-        cur.execute("""
-        SELECT * FROM phone_numbers
-        """)
+            print(cur.fetchall())
 
-        print(cur.fetchall())
+        with conn.cursor() as cur:
+            cur.execute("""
+            SELECT * FROM clients
+            """)
 
-    with conn.cursor() as cur:
-        cur.execute("""
-        SELECT * FROM clients
-        """)
+            print(cur.fetchall())
 
-        print(cur.fetchall())
-
-    print()
-    print('Поиск клиента:')
-    find_client(conn, phone='2222')
-    find_client(conn, 'alex')
+        print()
+        print('Поиск клиента:')
+        find_client(conn, phone='2222')
+        find_client(conn, 'alex')
 
     conn.close()
