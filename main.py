@@ -17,8 +17,6 @@ def create_db(conn):
         );
         """)
 
-        conn.commit()
-
 
 def add_client(conn, name, lastname, email, phone=None):
     with conn.cursor() as cur:
@@ -35,8 +33,6 @@ def add_client(conn, name, lastname, email, phone=None):
             VALUES (%s,%s);
             """, (client_id, phone))
 
-            conn.commit()
-
 
 def add_number(conn, client_id, phone):
     with conn.cursor() as cur:
@@ -44,8 +40,6 @@ def add_number(conn, client_id, phone):
         INSERT INTO phone_numbers
         VALUES (%s, %s)
         """, (client_id, phone))
-
-        conn.commit()
 
 
 def change_client(conn, client_id, name=None, lastname=None, email=None, phones=None):
@@ -57,8 +51,6 @@ def change_client(conn, client_id, name=None, lastname=None, email=None, phones=
             WHERE client_id=%s
             """, (name, client_id))
 
-            conn.commit()
-
         if lastname != None:
             cur.execute("""
             UPDATE clients
@@ -66,16 +58,12 @@ def change_client(conn, client_id, name=None, lastname=None, email=None, phones=
             WHERE client_id=%s
             """, (lastname, client_id))
 
-            conn.commit()
-
         if email != None:
             cur.execute("""
             UPDATE clients
             SET email=%s
             WHERE client_id=%s
             """, (email, client_id))
-
-            conn.commit()
 
         if phones != None:
             cur.execute("""
@@ -92,22 +80,17 @@ def change_client(conn, client_id, name=None, lastname=None, email=None, phones=
                         VALUES (%s, %s);
                         """, (client_id, phone))
 
-                    conn.commit()
             else:
                 cur.execute("""
                 DELETE FROM phone_numbers
                 WHERE client_id=%s;
                 """, (client_id,))
 
-                conn.commit()
-
                 for phone in phones:
                     cur.execute("""
                     INSERT INTO phone_numbers
                     VALUES (%s, %s);
                     """, (client_id, phone))
-
-                conn.commit()
 
 
 def delete_phone(conn, client_id, phone):
@@ -116,8 +99,6 @@ def delete_phone(conn, client_id, phone):
         DELETE FROM phone_numbers
         WHERE client_id = %s AND phone=%s;
         """, (client_id, phone))
-
-        conn.commit()
 
 
 def delete_client(conn, client_id):
@@ -135,14 +116,10 @@ def delete_client(conn, client_id):
             WHERE id=%s;
             """, (client_id,))
 
-            conn.commit()
-
         cur.execute("""
         DELETE FROM clients
         WHERE client_id = %s;
         """, (client_id,))
-
-        conn.commit()
 
 
 def find_client(conn, name=None, lastname=None, email=None, phone=None):
@@ -186,11 +163,11 @@ def find_client(conn, name=None, lastname=None, email=None, phone=None):
 
 with psycopg2.connect(database="Clients", user="postgres", password="4815162342.cth84.te") as conn:
 
-    with conn.cursor() as cur:
-        cur.execute("""
-        DROP TABLE phone_numbers;
-        DROP TABLE clients;
-        """)
+    # with conn.cursor() as cur:
+    #     cur.execute("""
+    #     DROP TABLE phone_numbers;
+    #     DROP TABLE clients;
+    #     """)
 
     create_db(conn)
     add_client(conn, 'alex', 'ford', '1@1.ru', 1111)
@@ -267,3 +244,5 @@ with psycopg2.connect(database="Clients", user="postgres", password="4815162342.
     print('Поиск клиента:')
     find_client(conn, phone='2222')
     find_client(conn, 'alex')
+
+    conn.close()
