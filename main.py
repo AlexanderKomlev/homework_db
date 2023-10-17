@@ -1,4 +1,5 @@
 import psycopg2
+import os
 
 
 def create_db(conn):
@@ -162,7 +163,7 @@ def find_client(conn, name=None, lastname=None, email=None, phone=None):
 
 
 if __name__ == '__main__':
-    with psycopg2.connect(database="Clients", user="postgres", password="4815162342.cth84.te") as conn:
+    with psycopg2.connect(database="Clients", user="postgres", password=os.getenv('PASSWORD') as conn:
         with conn.cursor() as cur:
             cur.execute("""
             DROP TABLE phone_numbers;
